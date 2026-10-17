@@ -96,13 +96,13 @@ Run as separate, logged experiments, one change each:
 
 ## Requirements Coverage (from `docs/instructions.md`)
 
-- [ ] Option chosen (Option 2) and stated in the notebook
-- [ ] Data exploration: image count, sample images, image size choice
-- [ ] Baseline model fit on train/test data
-- [ ] Loss/accuracy plots evaluated
-- [ ] Architecture and/or hyperparameter variations tried
-- [ ] Accuracy improved over baseline, with explanation
-- [ ] Softmax output + `categorical_crossentropy` loss
+- [x] Option chosen (Option 2) and stated in the notebook
+- [x] Data exploration: image count, sample images, image size choice
+- [x] Baseline model fit on train/test data
+- [x] Loss/accuracy plots evaluated
+- [x] Architecture and/or hyperparameter variations tried
+- [x] Accuracy improved over baseline, with explanation
+- [x] Softmax output + `categorical_crossentropy` loss
 
 ---
 
@@ -110,5 +110,13 @@ Run as separate, logged experiments, one change each:
 
 | # | Date | Change (one variable) | Train acc | Val acc | Val loss | Notes / next move |
 |---|------|-----------------------|-----------|---------|----------|-------------------|
-| 0 | | Baseline small CNN | | | | |
-| 1 | | VGG19 frozen + new head | | | | |
+| 0 | 2026-10-16 | Baseline small CNN | 0.572 | 0.629 | 0.756 | Underfit (train acc low and rising, stopped at epoch 9). Number to beat. Move: pretrained backbone |
+| 1 | 2026-10-17 | VGG19 frozen + new head (Adam 1e-3) | 0.974 | 0.967 | 0.142 | +33.8 pts over baseline. Plateau at ~96-97%. Move: fine-tune block5 |
+| 2 | 2026-10-17 | Fine-tune block5, lr 1e-5 | 0.977 | 0.967 | 0.134 | Same acc, val loss rises after epoch 1 (overfit). Move: stronger augmentation |
+| 3 | 2026-10-17 | Strong augmentation | 0.941 | **0.984** | 0.066 | +1.8 pts, overfitting gone. Best model |
+| 4 | 2026-10-17 | RMSprop (instead of Adam) | 0.952 | 0.980 | 0.076 | No gain, Adam kept |
+| 5 | 2026-10-17 | SGD + momentum, lr 1e-3 | 0.952 | 0.969 | 0.103 | Worse, slow convergence |
+| 6 | 2026-10-17 | ReduceLROnPlateau | 0.942 | 0.980 | 0.090 | No gain. Stop rule met (3 runs with no gain) |
+| 7 | 2026-10-17 | MobileNetV2 frozen (exp 1 recipe) | 0.921 | 0.980 | 0.046 | Comparable acc, ~10x faster. Not adopted |
+
+**Final (exp 3, evaluated once on test): accuracy 0.980 (441/450), loss 0.070.**

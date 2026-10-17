@@ -223,3 +223,6 @@ __marimo__/
 .streamlit/secrets.toml
 
 scripts
+
+# trained model weights
+models/
